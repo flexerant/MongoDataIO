@@ -348,3 +348,9 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+AzureFunction/Properties/ServiceDependencies
+AzureFunction/Properties/serviceDependencies.mongodump-flexerant - Zip Deploy.json
+AzureFunction/Properties/launchSettings.json
+AzureFunction/Properties/serviceDependencies.json
+AzureFunction/Properties/serviceDependencies.local.json
+Console/Properties/launchSettings.json
