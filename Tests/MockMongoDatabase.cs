@@ -13,13 +13,13 @@ namespace Tests
         public string ConnectionString { get; private set; }
         public string DatabaseName { get; private set; }
 
-        public MockMongoDatabase()
+        public MockMongoDatabase(string databaseName = null)
         {
             _runner = MongoDbRunner.Start();
 
             MongoClient client = new MongoClient(_runner.ConnectionString);
 
-            this.DatabaseName = typeof(MockMongoDatabase).Name;
+            this.DatabaseName = string.IsNullOrWhiteSpace(databaseName) ? typeof(MockMongoDatabase).Name : databaseName;
             this.ConnectionString = _runner.ConnectionString;
             this.Database = client.GetDatabase(this.DatabaseName);
         }

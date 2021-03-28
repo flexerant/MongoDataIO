@@ -1,4 +1,5 @@
 ﻿using Flexerant.MongoDataIO.AzureFunction;
+using Flexerant.MongoDataIO.Core;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
@@ -9,8 +10,15 @@ using Xunit;
 
 namespace Tests
 {
-    public class FunctionTests
+    public class FunctionTests : IClassFixture<BlobStorageFixture>
     {
+        private readonly BlobStorageFixture _blobStorageFixture;
+
+        public FunctionTests(BlobStorageFixture blobStorageFixture)
+        {
+            _blobStorageFixture = blobStorageFixture;
+        }
+
         [Theory]
         [InlineData("", "dataBaseName", "clusterUri")]
         [InlineData(null, "dataBaseName", "clusterUri")]
@@ -33,6 +41,31 @@ namespace Tests
             var mockLogger = new Mock<ILogger>();
 
             await Assert.ThrowsAsync<ArgumentException>(() => MongoDumpFunction.Run(request, mockLogger.Object));
+        }
+
+        [Fact]
+        public async Task RunFunction()
+        {
+            using (var tempenv = new TempEnvironment(Helpers.GetMongoToolesFolder()))
+            {
+                using (var db = new MockMongoDatabase())
+                {
+                    DumpToAzureRequest request = new DumpToAzureRequest()
+                    {
+                        BlobConnectionString = _blobStorageFixture.ConnectionString,
+                        DataBaseName = db.DatabaseName,
+                        ClusterUri = db.ConnectionString
+                    };
+
+                    var mockLogger = new Mock<ILogger>();
+                    var response = await MongoDumpFunction.Run(request, mockLogger.Object);
+                    var ok = response as Microsoft.AspNetCore.Mvc.OkObjectResult;
+                    var result = ok.Value as DumpToAzureResult;
+
+                    Assert.False(string.IsNullOrWhiteSpace(result.ContainerName));
+                    Assert.False(string.IsNullOrWhiteSpace(result.BlobName));
+                }
+            }
         }
     }
 }

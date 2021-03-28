@@ -8,5 +8,6 @@ namespace Flexerant.MongoDataIO.Core
     {
         public string BlobName { get; set; }
         public string ContainerName { get; set; }
+        public List<string> LogData { get; set; } = new List<string>();
     }
 }

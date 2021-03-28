@@ -22,15 +22,15 @@ namespace Flexerant.MongoDataIO.AzureFunction
 
             try
             {
-                StringBuilder sb = new StringBuilder();
+                //StringBuilder sb = new StringBuilder();
                 string mongoBinFolder = Environment.GetEnvironmentVariable("MOGODB_EXE_DIRECTORY", EnvironmentVariableTarget.Process);
                 var target = new AzureTarget(mongoBinFolder);
 
-                await Task.Run(() => target.DumpToAzure(req.ClusterUri, req.DataBaseName, req.BlobConnectionString, data => sb.AppendLine(data)));
+                var result = await Task.Run(() => target.DumpToAzure(req.ClusterUri, req.DataBaseName, req.BlobConnectionString));
 
-                var response = sb.ToString();
+                //var response = sb.ToString();
 
-                return new OkObjectResult(response);
+                return new OkObjectResult(result);
             }
             catch (Exception ex)
             {
