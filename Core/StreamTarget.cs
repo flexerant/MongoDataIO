@@ -1,6 +1,4 @@
-﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Specialized;
-using CliWrap;
+﻿using CliWrap;
 using System;
 using System.IO;
 using System.Text;
