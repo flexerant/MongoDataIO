@@ -21,7 +21,7 @@ namespace Flexerant.MongoDataIO.Console
         {
             var target = new FileTarget(GetMongoBinFolder().FullName);
 
-            target.DumpToFile(opts.ClusterUri, opts.DataBaseName, opts.OutputFolder, data => System.Console.Write(data));
+            target.DumpToFile(opts.ClusterUri, opts.DataBaseName, opts.OutputFolder, lineData => System.Console.WriteLine(lineData));
 
             return 0;
         }
@@ -30,7 +30,7 @@ namespace Flexerant.MongoDataIO.Console
         {
             var target = new AzureTarget(GetMongoBinFolder().FullName);
 
-            target.DumpToAzure(opts.ClusterUri, opts.DataBaseName, opts.BlobConnectionString, data => System.Console.Write(data));
+            target.DumpToAzure(opts.ClusterUri, opts.DataBaseName, opts.BlobConnectionString, lineData => System.Console.WriteLine(lineData));
 
             return 0;
         }
@@ -39,7 +39,7 @@ namespace Flexerant.MongoDataIO.Console
         {
             var target = new FileTarget(GetMongoBinFolder().FullName);
 
-            target.RestoreFromFile(opts.ClusterUri, opts.DataBaseName, opts.ArchivePath, data => System.Console.Write(data));
+            target.RestoreFromFile(opts.ClusterUri, opts.ArchivePath, opts.SourceDataBaseName, opts.DestinationDataBaseName, lineData => System.Console.WriteLine(lineData));
 
             return 0;
         }
@@ -48,7 +48,15 @@ namespace Flexerant.MongoDataIO.Console
         {
             var target = new AzureTarget(GetMongoBinFolder().FullName);
 
-            target.RestoreFromAzure(opts.ClusterUri, opts.BlobConnectionString, opts.BlobContainer, opts.BlobName, data => System.Console.Write(data));
+            target.RestoreFromAzure(
+                opts.ClusterUri,
+                opts.BlobConnectionString,
+                opts.BlobContainer,
+                opts.BlobName,
+                opts.SourceDataBaseName,
+                opts.DestinationDataBaseName,
+                lineData => System.Console.WriteLine(lineData)
+                );
 
             return 0;
         }

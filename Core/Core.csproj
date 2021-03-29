@@ -4,11 +4,19 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Flexerant.MongoDataIO.Core</AssemblyName>
     <RootNamespace>Flexerant.MongoDataIO.Core</RootNamespace>
+    <Authors>Flexerant</Authors>
+    <Company>Flexerant</Company>
+    <Product />
+    <Description>A wrapper for mongodump.exe and mongorestore.exe.</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.8.0" />
     <PackageReference Include="CliWrap" Version="3.3.1" />
+    <PackageReference Include="GitVersion.MsBuild" Version="5.6.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

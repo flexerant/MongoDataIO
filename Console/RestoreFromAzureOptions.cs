@@ -13,5 +13,11 @@ namespace Flexerant.MongoDataIO.Console
 
         [Option("azure-blob-name", Required = true)]
         public string BlobName { get; set; }
+
+        [Option("source-db-name", Required = true)]
+        public string SourceDataBaseName { get; set; }
+
+        [Option("destination-db-name", Required = true)]
+        public string DestinationDataBaseName { get; set; }
     }
 }
