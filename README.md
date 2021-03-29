@@ -16,9 +16,9 @@ To overcome the aforementioned problem, this project includes an [Azure Function
 
 ## Azure Function
 
-The [AzureFunction project](https://github.com/flexerant/MongoDataIO/tree/main/AzureFunction) can be deployed to **Azure Functions** directly through Visual Studio. This deploys the code needed to back up the **MongoDB Atlas** database and save it to **Azure Blob Storage**.
+The [AzureFunction project](https://github.com/flexerant/MongoDataIO/tree/main/AzureFunction) can be deployed to **Azure Functions** directly through Visual Studio, using the publish feature. This deploys the code needed to back up the **MongoDB Atlas** database and save it to **Azure Blob Storage**.
 
-**Note:** Be sure to set the `MOGODB_EXE_DIRECTORY` environment variable for the **Azure Function**. If deploying the function as is, the value for the `MOGODB_EXE_DIRECTORY` environment variable is `C:\home\site\wwwroot\mongodb_db_tools\bin`.
+**Note:** Be sure to set the `MOGODB_EXE_DIRECTORY` environment variable for the **Azure Function**. If deploying the function as is, the value for the `MOGODB_EXE_DIRECTORY` environment variable is C:\home\site\wwwroot\mongodb_db_tools\bin`.
 
 ## Octopus Powershell Script
 
@@ -44,6 +44,8 @@ $response = Invoke-RestMethod -Uri $uri -Method Post -Body $json -ContentType "a
 
 ```
 
+`MongoDump.FunctionUrl` is the url for the **Azure Function**, `MongoDump.FunctionAccessKey` is the access key for the **Azure Function**, `MongoDump.AzureBlobConnectionString` is the **Azure Blob Storage** connection string, `MongoDump.DatabaseName` is the **MongoDB Atlas** database to be backed up, and `MongoDump.MongoConnectionString` is the connection string for the **MongoDB Atlas** database.
+
 ## Want to contribute?
 
-Fork the project, make your changes, and send us a PR. You can compile the project with Visual Studio 2019 and .NET Core 3.1.
+Fork the project, make your changes, and send us a PR. You can compile the project with Visual Studio 2019 and the .NET Core 3.1 framework.
