@@ -18,7 +18,7 @@ To overcome the aforementioned problem, this project includes an [Azure Function
 
 The [AzureFunction project](https://github.com/flexerant/MongoDataIO/tree/main/AzureFunction) can be deployed to **Azure Functions** directly through Visual Studio, using the publish feature. This deploys the code needed to back up the **MongoDB Atlas** database and save it to **Azure Blob Storage**.
 
-**Note:** Be sure to set the `MOGODB_EXE_DIRECTORY` environment variable for the **Azure Function**. If deploying the function as is, the value for the `MOGODB_EXE_DIRECTORY` environment variable is C:\home\site\wwwroot\mongodb_db_tools\bin`.
+**Note:** Be sure to set the `MOGODB_EXE_DIRECTORY` environment variable for the **Azure Function**. If deploying the function as is, the value for the `MOGODB_EXE_DIRECTORY` environment variable is `C:\home\site\wwwroot\mongodb_db_tools\bin`.
 
 ## Octopus Powershell Script
 
