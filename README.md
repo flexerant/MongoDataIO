@@ -46,6 +46,11 @@ $response = Invoke-RestMethod -Uri $uri -Method Post -Body $json -ContentType "a
 
 `MongoDump.FunctionUrl` is the url for the **Azure Function**, `MongoDump.FunctionAccessKey` is the access key for the **Azure Function**, `MongoDump.AzureBlobConnectionString` is the **Azure Blob Storage** connection string, `MongoDump.DatabaseName` is the **MongoDB Atlas** database to be backed up, and `MongoDump.MongoConnectionString` is the connection string for the **MongoDB Atlas** database.
 
-## Want to contribute?
+# Acknowlegements
+
+- [MongoDB Database Tools](https://github.com/mongodb/mongo-tools)
+- [CliWrap](https://github.com/Tyrrrz/CliWrap)
+
+# Want to contribute?
 
 Fork the project, make your changes, and send us a PR. You can compile the project with Visual Studio 2019 and the .NET Core 3.1 framework.
