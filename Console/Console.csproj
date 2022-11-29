@@ -2,14 +2,14 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Description>Backup/restore mongodb databases from to/from Azure.</Description>
     <AssemblyName>Flexerant.MongoDataIO.Console</AssemblyName>
     <RootNamespace>Flexerant.MongoDataIO.Console</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -30,6 +30,7 @@ namespace Flexerant.MongoDataIO.Core
         public DumpToAzureResult DumpToAzure(string mongoConnectionString, string databaseName, string blobConnectionString, string containerName, Action<string> outputData = null)
         {
             StreamTarget streamTarget = new StreamTarget(_mongodumpExe.Directory);
+            FileTarget fileTarget = new FileTarget(_mongodumpExe.Directory);
             DateTime now = DateTime.UtcNow;
             string blobName = $"{now.ToString("s").Replace(':', '-')}_{databaseName}.bak";
             BlobContainerClient container = new BlobContainerClient(blobConnectionString, containerName);
@@ -38,13 +39,31 @@ namespace Flexerant.MongoDataIO.Core
 
             container.CreateIfNotExists();
 
-            using (var blobStream = client.OpenWrite(true))
+            FileInfo tempFile = null;
+
+            try
             {
-                streamTarget.DumpToStream(blobStream, mongoConnectionString, databaseName, lineData =>
+                tempFile = fileTarget.DumpToFile(mongoConnectionString, databaseName, outputData);
+
+                using (FileStream fs = new FileStream(tempFile.FullName, FileMode.Open, FileAccess.Read))
                 {
-                    outputData?.Invoke(lineData);
-                    logData.Add(lineData);
-                });
+                    var blob = client.Upload(fs, new Azure.Storage.Blobs.Models.BlobUploadOptions());                    
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                try
+                {
+                    if (tempFile != null)
+                    {
+                        tempFile.Delete();
+                    }
+                }
+                catch { }
             }
 
             return new DumpToAzureResult() { BlobName = blobName, ContainerName = containerName, LogData = logData };
@@ -52,8 +71,8 @@ namespace Flexerant.MongoDataIO.Core
 
         public void RestoreFromAzure(
             string mongoConnectionString,
-            string blobConnectionString, 
-            string blobContainer, 
+            string blobConnectionString,
+            string blobContainer,
             string blobName,
             string sourceDatabaseName,
             string destinationDatabaseName,

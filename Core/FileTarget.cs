@@ -31,6 +31,21 @@ namespace Flexerant.MongoDataIO.Core
             return fiOutput;
         }
 
+        public FileInfo DumpToFile(string mongoConnectionString, string databaseName, Action<string> outputData = null)
+        {
+            StreamTarget streamTarget = new StreamTarget(_mongodumpExe.Directory);
+            //DirectoryInfo diOutput = new DirectoryInfo(Path.GetTempPath());
+            //DateTime now = DateTime.UtcNow;
+            FileInfo fiOutput = new FileInfo(Path.GetTempFileName());
+
+            using (FileStream fs = new FileStream(fiOutput.FullName, FileMode.Create, FileAccess.Write, FileShare.Write))
+            {
+                streamTarget.DumpToStream(fs, mongoConnectionString, databaseName, outputData);
+            }
+
+            return fiOutput;
+        }
+
         public void RestoreFromFile(string mongoConnectionString, string archivePath, string sourceDatabaseName, string destinationDatabaseName, Action<string> outputData = null)
         {
             StreamTarget streamTarget = new StreamTarget(_mongorestoreExe.Directory);
