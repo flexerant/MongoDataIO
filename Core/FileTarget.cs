@@ -1,5 +1,8 @@
-﻿using System;
+﻿using CliWrap;
+using System;
 using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Flexerant.MongoDataIO.Core
 {
@@ -33,18 +36,45 @@ namespace Flexerant.MongoDataIO.Core
 
         public FileInfo DumpToFile(string mongoConnectionString, string databaseName, Action<string> outputData = null)
         {
-            StreamTarget streamTarget = new StreamTarget(_mongodumpExe.Directory);
-            //DirectoryInfo diOutput = new DirectoryInfo(Path.GetTempPath());
-            //DateTime now = DateTime.UtcNow;
             FileInfo fiOutput = new FileInfo(Path.GetTempFileName());
+            string uri = Helpers.FormatUri(mongoConnectionString);
+            CommandResult result;
+            StringBuilder sb = new StringBuilder();
 
-            using (FileStream fs = new FileStream(fiOutput.FullName, FileMode.Create, FileAccess.Write, FileShare.Write))
+            var cmd = Cli.Wrap(_mongodumpExe.FullName)
+                .WithArguments($"--uri {uri}/{databaseName} --archive")
+                .WithStandardErrorPipe(PipeTarget.ToDelegate(text =>
+                {
+                    sb.AppendLine(text);
+                    outputData?.Invoke(text);
+                }, Encoding.ASCII))
+                .WithStandardOutputPipe(PipeTarget.ToFile(fiOutput.FullName))
+                .WithValidation(CommandResultValidation.None);
+
+            result = Task.Run(async () => await cmd.ExecuteAsync()).Result;
+
+            if (result.ExitCode != 0)
             {
-                streamTarget.DumpToStream(fs, mongoConnectionString, databaseName, outputData);
+                throw new Exception(sb.ToString());
             }
 
             return fiOutput;
         }
+
+        //public FileInfo DumpToFile(string mongoConnectionString, string databaseName, Action<string> outputData = null)
+        //{
+        //    StreamTarget streamTarget = new StreamTarget(_mongodumpExe.Directory);
+        //    //DirectoryInfo diOutput = new DirectoryInfo(Path.GetTempPath());
+        //    //DateTime now = DateTime.UtcNow;
+        //    FileInfo fiOutput = new FileInfo(Path.GetTempFileName());
+
+        //    using (FileStream fs = new FileStream(fiOutput.FullName, FileMode.Create, FileAccess.Write, FileShare.Write))
+        //    {
+        //        streamTarget.DumpToStream(fs, mongoConnectionString, databaseName, outputData);
+        //    }
+
+        //    return fiOutput;
+        //}
 
         public void RestoreFromFile(string mongoConnectionString, string archivePath, string sourceDatabaseName, string destinationDatabaseName, Action<string> outputData = null)
         {

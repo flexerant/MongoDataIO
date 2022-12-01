@@ -354,3 +354,6 @@ AzureFunction/Properties/launchSettings.json
 AzureFunction/Properties/serviceDependencies.json
 AzureFunction/Properties/serviceDependencies.local.json
 Console/Properties/launchSettings.json
+DumpToAzureWebJob/Properties/launchSettings.json
+DumpToAzureClientConsole/Properties/launchSettings.json
+DumpToAzureWebJob/Properties/ServiceDependencies/mongodump-flexerant-webjob - Web Deploy/profile.arm.json

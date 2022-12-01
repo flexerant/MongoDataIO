@@ -1,5 +1,7 @@
 ﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
+using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,7 +32,6 @@ namespace Flexerant.MongoDataIO.Core
         public DumpToAzureResult DumpToAzure(string mongoConnectionString, string databaseName, string blobConnectionString, string containerName, Action<string> outputData = null)
         {
             StreamTarget streamTarget = new StreamTarget(_mongodumpExe.Directory);
-            FileTarget fileTarget = new FileTarget(_mongodumpExe.Directory);
             DateTime now = DateTime.UtcNow;
             string blobName = $"{now.ToString("s").Replace(':', '-')}_{databaseName}.bak";
             BlobContainerClient container = new BlobContainerClient(blobConnectionString, containerName);
@@ -39,31 +40,13 @@ namespace Flexerant.MongoDataIO.Core
 
             container.CreateIfNotExists();
 
-            FileInfo tempFile = null;
-
-            try
+            using (var blobStream = client.OpenWrite(true))
             {
-                tempFile = fileTarget.DumpToFile(mongoConnectionString, databaseName, outputData);
-
-                using (FileStream fs = new FileStream(tempFile.FullName, FileMode.Open, FileAccess.Read))
+                streamTarget.DumpToStream(blobStream, mongoConnectionString, databaseName, lineData =>
                 {
-                    var blob = client.Upload(fs, new Azure.Storage.Blobs.Models.BlobUploadOptions());                    
-                }
-            }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                try
-                {
-                    if (tempFile != null)
-                    {
-                        tempFile.Delete();
-                    }
-                }
-                catch { }
+                    outputData?.Invoke(lineData);
+                    logData.Add(lineData);
+                });
             }
 
             return new DumpToAzureResult() { BlobName = blobName, ContainerName = containerName, LogData = logData };
